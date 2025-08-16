@@ -2,61 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dynamic Quote App</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 600px;
-      margin: auto;
-      padding: 2rem;
-    }
-    #quoteDisplay {
-      padding: 1rem;
-      background: #f0f0f0;
-      margin-bottom: 1rem;
-    }
-    #syncStatus {
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-      color: green;
-    }
-    form input {
-      margin: 0.5rem 0;
-      display: block;
-      width: 100%;
-      padding: 0.5rem;
-    }
-    button {
-      padding: 0.5rem 1rem;
-      margin: 0.3rem;
-    }
-  </style>
+  <title>Dynamic Quote Generator</title>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <div id="syncStatus">🔄 Waiting for sync...</div>
+  <!-- Sync status will be inserted above this by JS -->
+  <div id="quoteDisplay"></div>
 
-  <div id="quoteDisplay">Loading quotes...</div>
+  <button id="newQuote">New Quote</button>
 
-  <button id="newQuote">Show Random Quote</button>
-
-  <label for="categoryFilter">Filter by Category:</label>
   <select id="categoryFilter">
     <option value="all">All Categories</option>
   </select>
 
   <div id="quoteFormContainer"></div>
 
-  <div>
-    <button onclick="exportToJsonFile()">Export Quotes</button>
-    <label style="display:block; margin-top: 1rem;">
-      Import Quotes:
-      <input type="file" onchange="importFromJsonFile(event)" />
-    </label>
-  </div>
+  <br><br>
 
-  <!-- Your JavaScript file -->
+  <!-- Import and Export Buttons -->
+  <input type="file" id="importFile" />
+  <button id="exportJson">Export Quotes</button>
+
   <script src="script.js"></script>
 </body>
 </html>
