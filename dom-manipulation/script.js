@@ -14,7 +14,8 @@ function displayRandomQuote() {
 
 
 // Step 3: Link button to function
-document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+document.getElementById("newQuote").addEventListener("click", displayRandomQuote);
+displayRandomQuote();
 
 // Call it once at start
 showRandomQuote();
