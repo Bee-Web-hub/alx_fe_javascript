@@ -16,7 +16,7 @@ function displayRandomQuote() {
 document.getElementById("newQuote").addEventListener("click", displayRandomQuote);
 
 // Show one quote on page load
-displayRandomQuote();
+showRandomQuote();
 
 // Function to add a new quote from form
 function addQuote() {
