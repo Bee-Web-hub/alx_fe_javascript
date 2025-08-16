@@ -3,19 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Random Quote Generator</title>
+  <title>Quote Manager</title>
 </head>
 <body>
-  <h1>Random Quote Generator</h1>
+  <h1>Quote Manager</h1>
 
-  <!-- Display random quote -->
+  <!-- Random Quote Display -->
   <div id="quoteDisplay"></div>
   <button id="newQuote">Show New Quote</button>
 
-  <!-- Container for adding new quotes -->
+  <!-- Add Quote Form -->
   <div id="quoteFormContainer"></div>
 
-  <!-- Include the script -->
+  <!-- Export / Import -->
+  <button onclick="exportToJsonFile()">Export Quotes</button>
+  <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+
+  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>
