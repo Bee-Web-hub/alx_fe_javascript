@@ -19,7 +19,7 @@ function saveQuotes() {
 }
 
 // ====== DISPLAY RANDOM QUOTE ======
-function displayRandomQuote() {
+function showRandomQuote() {
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
   document.getElementById("quoteDisplay").innerHTML = `"${quote.text}" - Category: ${quote.category}`;
