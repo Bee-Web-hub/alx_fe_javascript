@@ -1,76 +1,19 @@
 // ===== DYNAMIC QUOTE GENERATOR JS =====
 
 let quotes = JSON.parse(localStorage.getItem("quotes")) || [
-  {
-    text: "The only limit to our realization of tomorrow is our doubts of today.",
-    author: "Franklin D. Roosevelt",
-    category: "Motivation"
-  },
-  {
-    text: "Life is what happens when you're busy making other plans.",
-    author: "John Lennon",
-    category: "Life"
-  }
+  { text: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt", category: "Motivation" },
+  { text: "Life is what happens when you're busy making other plans.", author: "John Lennon", category: "Life" }
 ];
 
 let currentQuoteIndex = 0;
 
-// ===== FETCH FROM SERVER =====
-async function fetchQuotesFromServer() {
-  try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
-    const data = await response.json();
-    const serverQuotes = data.slice(0, 5).map(item => ({
-      text: item.body,
-      author: `User ${item.userId}`,
-      category: "Imported"
-    }));
-
-    const storedQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
-    const newQuotes = serverQuotes.filter(sq => !storedQuotes.some(lq => lq.text === sq.text));
-    const mergedQuotes = [...storedQuotes, ...newQuotes];
-
-    localStorage.setItem("quotes", JSON.stringify(mergedQuotes));
-    quotes = mergedQuotes;
-
-    renderQuote();
-    renderCategories();
-
-    if (newQuotes.length) {
-      alert("Quotes synced with server!"); // ✅ added without changing anything else
-    }
-
-  } catch (error) {
-    console.error("Error fetching quotes:", error);
-  }
-}
-
-// ===== POST TO SERVER =====
-async function postQuoteToServer(quote) {
-  try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(quote)
-    });
-    const result = await response.json();
-    console.log("Posted to server:", result);
-  } catch (error) {
-    console.error("Error posting quote:", error);
-  }
-}
-
-// ===== SYNC FUNCTION =====
-async function syncQuotes() {
-  await fetchQuotesFromServer();
-  quotes = JSON.parse(localStorage.getItem("quotes")) || [];
+// ===== DISPLAY / RANDOM QUOTE =====
+function displayRandomQuote() {
+  if (!quotes.length) return;
+  currentQuoteIndex = Math.floor(Math.random() * quotes.length);
   renderQuote();
-  renderCategories();
-  // alert is now here as well to cover checks
-  alert("Quotes synced with server!");
 }
 
-// ===== RENDERING =====
 function renderQuote() {
   const quote = quotes[currentQuoteIndex % quotes.length];
   document.getElementById("quoteDisplay").innerHTML = `
@@ -79,28 +22,25 @@ function renderQuote() {
   `;
 }
 
+// ===== CATEGORY FILTER =====
 function renderCategories() {
   const select = document.getElementById("categoryFilter");
   const categories = ["All Categories", ...new Set(quotes.map(q => q.category))];
   select.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join("");
 }
 
-// ===== FILTERING =====
 function filterQuotes() {
   const filter = document.getElementById("categoryFilter").value;
   const filtered = filter === "All Categories" ? quotes : quotes.filter(q => q.category === filter);
   if (filtered.length) {
     currentQuoteIndex = 0;
-    document.getElementById("quoteDisplay").innerHTML = `
-      <blockquote>"${filtered[0].text}"</blockquote>
-      <p>- ${filtered[0].author} (${filtered[0].category})</p>
-    `;
+    renderQuote();
   } else {
     document.getElementById("quoteDisplay").innerHTML = "<p>No quotes found for this category.</p>";
   }
 }
 
-// ===== FORM =====
+// ===== ADD QUOTE FORM =====
 function setupForm() {
   const container = document.getElementById("quoteFormContainer");
   container.innerHTML = `
@@ -129,17 +69,15 @@ function addQuote() {
   }
 }
 
-// ===== EXPORT/IMPORT =====
+// ===== EXPORT / IMPORT =====
 function exportToJsonFile() {
-  const dataStr = JSON.stringify(quotes, null, 2);
-  const blob = new Blob([dataStr], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "quotes.json";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "quotes.json";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
   alert("Quotes exported!");
 }
 
@@ -150,11 +88,12 @@ function importFromJsonFile(event) {
     try {
       const imported = JSON.parse(reader.result);
       if (Array.isArray(imported)) {
-        quotes = [...quotes, ...imported];
+        const newQuotes = imported.filter(iq => !quotes.some(q => q.text === iq.text));
+        quotes = [...quotes, ...newQuotes];
         localStorage.setItem("quotes", JSON.stringify(quotes));
         renderQuote();
         renderCategories();
-        alert("Quotes imported!");
+        if (newQuotes.length) alert(`${newQuotes.length} quotes imported!`);
       }
     } catch (e) {
       alert("Invalid file format.");
@@ -163,18 +102,56 @@ function importFromJsonFile(event) {
   reader.readAsText(file);
 }
 
+// ===== FETCH / POST / SYNC =====
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const data = await response.json();
+    const serverQuotes = data.slice(0, 5).map(item => ({
+      text: item.body,
+      author: `User ${item.userId}`,
+      category: "Imported"
+    }));
+    const newQuotes = serverQuotes.filter(sq => !quotes.some(lq => lq.text === sq.text));
+    if (newQuotes.length) {
+      quotes = [...quotes, ...newQuotes];
+      localStorage.setItem("quotes", JSON.stringify(quotes));
+      alert(`${newQuotes.length} new quote(s) synced with server!`);
+      renderQuote();
+      renderCategories();
+    }
+  } catch (error) {
+    console.error("Error fetching quotes:", error);
+  }
+}
+
+async function postQuoteToServer(quote) {
+  try {
+    await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(quote)
+    });
+  } catch (error) {
+    console.error("Error posting quote:", error);
+  }
+}
+
+async function syncQuotes() {
+  await fetchQuotesFromServer();
+}
+
 // ===== EVENTS =====
-document.getElementById("newQuote").addEventListener("click", () => {
-  currentQuoteIndex++;
-  renderQuote();
-});
+document.getElementById("newQuote").addEventListener("click", displayRandomQuote);
+document.getElementById("categoryFilter").addEventListener("change", filterQuotes);
 
 // ===== AUTO SYNC =====
 setInterval(syncQuotes, 30000);
 
-// ===== INITIAL LOAD =====
+// ===== INITIALIZE =====
 window.onload = async () => {
-  await syncQuotes();
-  setupForm();
+  displayRandomQuote();
   renderCategories();
+  setupForm();
+  await syncQuotes();
 };
