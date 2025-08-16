@@ -1,36 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dynamic Quote Generator</title>
+  <meta charset="UTF-8">
+  <title>Dynamic Quote App</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    #quoteDisplay { margin-top: 20px; font-size: 1.2rem; }
-    #syncStatus { margin-top: 10px; color: green; font-weight: bold; }
-    form input, form button { margin-right: 10px; margin-top: 10px; }
-    select { margin-left: 10px; }
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: auto;
+      padding: 2rem;
+    }
+    #quoteDisplay {
+      padding: 1rem;
+      background: #f0f0f0;
+      margin-bottom: 1rem;
+    }
+    #syncStatus {
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      color: green;
+    }
+    form input {
+      margin: 0.5rem 0;
+      display: block;
+      width: 100%;
+      padding: 0.5rem;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      margin: 0.3rem;
+    }
   </style>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <div>
-    <button id="newQuote">Show New Quote</button>
-    <select id="categoryFilter">
-      <option value="all">All Categories</option>
-    </select>
-    <button onclick="exportToJsonFile()">Export Quotes</button>
-    <label>
-      Import:
-      <input type="file" accept=".json" onchange="importFromJsonFile(event)" />
-    </label>
-  </div>
+  <div id="syncStatus">🔄 Waiting for sync...</div>
 
-  <div id="quoteDisplay">Loading quote...</div>
+  <div id="quoteDisplay">Loading quotes...</div>
+
+  <button id="newQuote">Show Random Quote</button>
+
+  <label for="categoryFilter">Filter by Category:</label>
+  <select id="categoryFilter">
+    <option value="all">All Categories</option>
+  </select>
 
   <div id="quoteFormContainer"></div>
 
-  <script src="app.js"></script>
+  <div>
+    <button onclick="exportToJsonFile()">Export Quotes</button>
+    <label style="display:block; margin-top: 1rem;">
+      Import Quotes:
+      <input type="file" onchange="importFromJsonFile(event)" />
+    </label>
+  </div>
+
+  <!-- Your JavaScript file -->
+  <script src="script.js"></script>
 </body>
 </html>
