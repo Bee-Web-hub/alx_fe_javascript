@@ -1,10 +1,3 @@
-// Final script.js that includes:
-// - Full quote generator logic
-// - Fetch from mock API
-// - Post to mock API
-// - Syncing local storage
-// - UI update
-
 let quotes = JSON.parse(localStorage.getItem("quotes")) || [
   {
     text: "The only limit to our realization of tomorrow is our doubts of today.",
@@ -32,7 +25,6 @@ async function fetchQuotesFromServer() {
 
     const storedQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
 
-    // Simple conflict resolution: Avoid duplicate text entries
     const newQuotes = serverQuotes.filter(sq => !storedQuotes.some(lq => lq.text === sq.text));
     const mergedQuotes = [...storedQuotes, ...newQuotes];
 
@@ -60,6 +52,15 @@ async function postQuoteToServer(quote) {
   } catch (error) {
     console.error("Error posting quote:", error);
   }
+}
+
+// ✅ syncQuotes function
+async function syncQuotes() {
+  await fetchQuotesFromServer();
+  quotes = JSON.parse(localStorage.getItem("quotes")) || [];
+  renderQuote();
+  renderCategories();
+  notify("Quotes synced successfully.");
 }
 
 function renderQuote() {
@@ -163,8 +164,8 @@ function notify(message) {
   setTimeout(() => document.body.removeChild(div), 3000);
 }
 
-// Periodically sync with server every 30 seconds
-setInterval(fetchQuotesFromServer, 30000);
+// Sync every 30 seconds
+setInterval(syncQuotes, 30000);
 
 document.getElementById("newQuote").addEventListener("click", () => {
   currentQuoteIndex++;
@@ -172,8 +173,6 @@ document.getElementById("newQuote").addEventListener("click", () => {
 });
 
 window.onload = async () => {
-  await fetchQuotesFromServer();
-  renderQuote();
-  renderCategories();
+  await syncQuotes();
   setupForm();
 };

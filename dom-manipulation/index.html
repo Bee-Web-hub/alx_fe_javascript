@@ -11,36 +11,48 @@
     }
     #quoteDisplay blockquote {
       font-size: 1.5em;
-      margin: 20px 0 10px;
-      font-style: italic;
+      margin: 10px 0;
     }
-    #quoteDisplay p {
-      margin: 0;
-    }
-    select, input, button {
+    #quoteFormContainer input {
       margin: 5px 0;
+      width: 100%;
       padding: 8px;
-      font-size: 1em;
+    }
+    #quoteFormContainer button {
+      margin-top: 10px;
+      padding: 10px 20px;
     }
   </style>
 </head>
 <body>
-
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Display Area -->
+  <!-- Quote Display -->
   <div id="quoteDisplay">
-    <blockquote>"Loading..."</blockquote>
-    <p>- Author (Category)</p>
+    <blockquote>Loading...</blockquote>
   </div>
 
-  <!-- Category Filter -->
-  <label for="categoryFilter">Filter by category:</label><br/>
-  <select id="categoryFilter" onchange="filterQuotes()">
-    <option>All Categories</option>
-  </select>
+  <!-- New Quote Button -->
+  <button id="newQuote">New Quote</button>
 
-  <!-- Buttons -->
-  <div style="margin-top: 10px;">
-    <button id="newQuote">New Quote</button>
-    <button oncli
+  <!-- Category Filter -->
+  <div style="margin-top: 20px;">
+    <label for="categoryFilter">Filter by category:</label>
+    <select id="categoryFilter" onchange="filterQuotes()">
+      <option>All Categories</option>
+    </select>
+  </div>
+
+  <!-- Quote Form -->
+  <div id="quoteFormContainer" style="margin-top: 30px;"></div>
+
+  <!-- Import/Export -->
+  <div style="margin-top: 30px;">
+    <button onclick="exportToJsonFile()">Export Quotes</button>
+    <input type="file" accept=".json" onchange="importFromJsonFile(event)" />
+  </div>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
