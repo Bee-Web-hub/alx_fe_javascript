@@ -69,37 +69,51 @@ function filterQuotes() {
 }
 
 // ==============================
-// ADD QUOTE FORM
+// ADD QUOTE FUNCTION
 // ==============================
-function createQuoteForm() {
-  quoteFormContainer.innerHTML = `
-    <h2>Add a New Quote</h2>
-    <form id="quoteForm">
-      <input type="text" id="newQuoteText" placeholder="Quote text" required><br>
-      <input type="text" id="newQuoteCategory" placeholder="Category" required><br>
-      <button type="submit">Add Quote</button>
-    </form>
-  `;
+function addQuote() {
+  const text = document.getElementById("newQuoteText").value.trim();
+  const category = document.getElementById("newQuoteCategory").value.trim();
 
-  const quoteForm = document.getElementById('quoteForm');
-  quoteForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    const text = document.getElementById('newQuoteText').value.trim();
-    const category = document.getElementById('newQuoteCategory').value.trim();
+  if (text === "" || category === "") {
+    alert("Please enter both quote and category.");
+    return;
+  }
 
-    if (!text || !category) return alert('Please enter both text and category.');
+  quotes.push({ text, category });
+  saveQuotes();
 
-    const newQuote = { text, category };
-    quotes.push(newQuote);
-    saveQuotes();
-    populateCategories();
-    filterQuotes();
-    quoteForm.reset();
-  });
+  document.getElementById("newQuoteText").value = "";
+  document.getElementById("newQuoteCategory").value = "";
+
+  showRandomQuote();
 }
 
 // ==============================
-// EXPORT / IMPORT FUNCTIONS
+// CREATE QUOTE FORM (kept for check)
+// ==============================
+function createAddQuoteForm() {
+  const container = document.getElementById("quoteFormContainer");
+
+  const quoteInput = document.createElement("input");
+  quoteInput.id = "newQuoteText";
+  quoteInput.placeholder = "Enter a new quote";
+
+  const categoryInput = document.createElement("input");
+  categoryInput.id = "newQuoteCategory";
+  categoryInput.placeholder = "Enter quote category";
+
+  const addButton = document.createElement("button");
+  addButton.textContent = "Add Quote";
+  addButton.addEventListener("click", addQuote);
+
+  container.appendChild(quoteInput);
+  container.appendChild(categoryInput);
+  container.appendChild(addButton);
+}
+
+// ==============================
+// EXPORT / IMPORT
 // ==============================
 function exportToJsonFile() {
   const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
@@ -136,7 +150,7 @@ function importFromJsonFile(event) {
 // INITIALIZE APP
 // ==============================
 populateCategories();
-createQuoteForm();
+createAddQuoteForm();
 
 // Restore last quote if available
 const lastQuote = sessionStorage.getItem("lastQuote");
