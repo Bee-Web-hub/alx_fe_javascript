@@ -1,29 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dynamic Quote Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #quoteDisplay blockquote {
+      font-size: 1.5em;
+      margin: 20px 0 10px;
+      font-style: italic;
+    }
+    #quoteDisplay p {
+      margin: 0;
+    }
+    select, input, button {
+      margin: 5px 0;
+      padding: 8px;
+      font-size: 1em;
+    }
+  </style>
 </head>
 <body>
+
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Sync status will be inserted above this by JS -->
-  <div id="quoteDisplay"></div>
+  <!-- Display Area -->
+  <div id="quoteDisplay">
+    <blockquote>"Loading..."</blockquote>
+    <p>- Author (Category)</p>
+  </div>
 
-  <button id="newQuote">New Quote</button>
-
-  <select id="categoryFilter">
-    <option value="all">All Categories</option>
+  <!-- Category Filter -->
+  <label for="categoryFilter">Filter by category:</label><br/>
+  <select id="categoryFilter" onchange="filterQuotes()">
+    <option>All Categories</option>
   </select>
 
-  <div id="quoteFormContainer"></div>
-
-  <br><br>
-
-  <!-- Import and Export Buttons -->
-  <input type="file" id="importFile" />
-  <button id="exportJson">Export Quotes</button>
-
-  <script src="script.js"></script>
-</body>
-</html>
+  <!-- Buttons -->
+  <div style="margin-top: 10px;">
+    <button id="newQuote">New Quote</button>
+    <button oncli

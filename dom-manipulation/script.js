@@ -1,6 +1,7 @@
 // Final script.js that includes:
 // - Full quote generator logic
 // - Fetch from mock API
+// - Post to mock API
 // - Syncing local storage
 // - UI update
 
@@ -42,6 +43,22 @@ async function fetchQuotesFromServer() {
     notify("Quotes updated from server.");
   } catch (error) {
     console.error("Error fetching quotes:", error);
+  }
+}
+
+async function postQuoteToServer(quote) {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(quote)
+    });
+    const result = await response.json();
+    console.log("Posted to server:", result);
+  } catch (error) {
+    console.error("Error posting quote:", error);
   }
 }
 
@@ -97,6 +114,7 @@ function addQuote() {
     renderQuote();
     renderCategories();
     notify("Quote added!");
+    postQuoteToServer(newQuote);
   } else {
     notify("All fields are required.");
   }
