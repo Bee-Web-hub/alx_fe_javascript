@@ -4,13 +4,14 @@ const quotes = [
   { text: "Life is what happens when you're busy making other plans.", category: "life" }
 ];
 
-// Step 2: Show a random quote
-function showRandomQuote() {
+// Step 2: Function to show a random quote
+function displayRandomQuote() {
   const quoteDisplay = document.getElementById("quoteDisplay");
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
-  quoteDisplay.textContent = `"${quote.text}" - Category: ${quote.category}`;
+  quoteDisplay.innerHTML = `"${quote.text}" - Category: ${quote.category}`;
 }
+
 
 // Step 3: Link button to function
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
