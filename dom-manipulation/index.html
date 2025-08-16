@@ -2,61 +2,35 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dynamic Quote Generator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-
-    #quoteDisplay > div {
-      background: #f9f9f9;
-      border-left: 5px solid #007BFF;
-      margin: 10px 0;
-      padding: 10px;
-    }
-
-    form input {
-      margin-right: 10px;
-      padding: 5px;
-    }
-
-    form button {
-      padding: 5px 10px;
-    }
-
-    #syncStatus {
-      margin-top: 15px;
-      font-weight: bold;
-      color: green;
-    }
-  </style>
 </head>
 <body>
-  <h1>📜 Dynamic Quote Generator</h1>
+  <h1>Dynamic Quote Generator</h1>
+
+  <!-- Sync Status -->
+  <p id="syncStatus">✅ Up to date</p>
+
+  <!-- Quote Display -->
+  <div id="quoteDisplay" style="margin: 1em 0; font-size: 1.2em;"></div>
 
   <!-- Category Filter -->
   <label for="categoryFilter">Filter by Category:</label>
-  <select id="categoryFilter" onchange="filterQuotes()">
+  <select id="categoryFilter">
     <option value="all">All Categories</option>
   </select>
 
-  <!-- Quote Display -->
-  <div id="quoteDisplay"></div>
-  <button id="newQuote">Show New Quote</button>
+  <!-- Show New Quote -->
+  <button id="newQuote">New Quote</button>
 
-  <!-- Add Quote Form (Created by JS) -->
-  <div id="quoteFormContainer"></div>
+  <!-- Add New Quote Form -->
+  <div id="quoteFormContainer" style="margin-top: 2em;"></div>
 
   <!-- Export and Import -->
-  <div style="margin-top: 20px;">
-    <button onclick="exportToJsonFile()">📤 Export Quotes</button>
-    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+  <div style="margin-top: 2em;">
+    <button onclick="exportToJsonFile()">Export Quotes</button>
+    <input type="file" accept="application/json" onchange="importFromJsonFile(event)" />
   </div>
-
-  <!-- Sync Status -->
-  <div id="syncStatus">🔄 Syncing with server...</div>
 
   <!-- Script -->
   <script src="script.js"></script>
