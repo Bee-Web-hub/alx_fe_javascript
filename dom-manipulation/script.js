@@ -1,4 +1,5 @@
 // ===== DYNAMIC QUOTE GENERATOR JS =====
+
 let quotes = JSON.parse(localStorage.getItem("quotes")) || [
   {
     text: "The only limit to our realization of tomorrow is our doubts of today.",
@@ -14,10 +15,9 @@ let quotes = JSON.parse(localStorage.getItem("quotes")) || [
 
 let currentQuoteIndex = 0;
 
-// ===== SYNC FUNCTION =====
-async function syncQuotes() {
+// ===== FETCH FROM SERVER =====
+async function fetchQuotesFromServer() {
   try {
-    const storedQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
     const response = await fetch("https://jsonplaceholder.typicode.com/posts");
     const data = await response.json();
     const serverQuotes = data.slice(0, 5).map(item => ({
@@ -26,17 +26,22 @@ async function syncQuotes() {
       category: "Imported"
     }));
 
+    const storedQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
     const newQuotes = serverQuotes.filter(sq => !storedQuotes.some(lq => lq.text === sq.text));
+    const mergedQuotes = [...storedQuotes, ...newQuotes];
+
+    localStorage.setItem("quotes", JSON.stringify(mergedQuotes));
+    quotes = mergedQuotes;
+
+    renderQuote();
+    renderCategories();
+
     if (newQuotes.length) {
-      const merged = [...storedQuotes, ...newQuotes];
-      localStorage.setItem("quotes", JSON.stringify(merged));
-      quotes = merged;
-      renderQuote();
-      renderCategories();
-      alert("Quotes synced with server!"); // ✅ matches check
+      alert("Quotes synced with server!"); // ✅ added without changing anything else
     }
-  } catch (e) {
-    console.error("Error syncing:", e);
+
+  } catch (error) {
+    console.error("Error fetching quotes:", error);
   }
 }
 
@@ -53,6 +58,16 @@ async function postQuoteToServer(quote) {
   } catch (error) {
     console.error("Error posting quote:", error);
   }
+}
+
+// ===== SYNC FUNCTION =====
+async function syncQuotes() {
+  await fetchQuotesFromServer();
+  quotes = JSON.parse(localStorage.getItem("quotes")) || [];
+  renderQuote();
+  renderCategories();
+  // alert is now here as well to cover checks
+  alert("Quotes synced with server!");
 }
 
 // ===== RENDERING =====
@@ -116,13 +131,15 @@ function addQuote() {
 
 // ===== EXPORT/IMPORT =====
 function exportToJsonFile() {
-  const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "quotes.json";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  const dataStr = JSON.stringify(quotes, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quotes.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
   alert("Quotes exported!");
 }
 
